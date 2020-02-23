@@ -5,7 +5,7 @@ import React, {
   useMemo,
   createContext
 } from 'react';
-import Counter from './Counter';
+// import Counter from './Counter';
 import Toggle from './Toggle';
 import { useTitleInput } from './hooks/useTitleInput';
 
@@ -23,12 +23,14 @@ const App = () => {
       .join('');
   };
 
-  const TitleReversed = reverseWord('Level Up Dishes');
+  const title = 'Level Up Dishes';
+
+  const TitleReversed = useMemo(() => reverseWord(name), [name]);
 
   return (
     <UserContext.Provider
       value={{
-        user: false
+        user: true
       }}
     >
       <div className='main-wrapper' ref={ref}>
@@ -36,7 +38,7 @@ const App = () => {
           {TitleReversed}
         </h1>
         <Toggle />
-        <Counter />
+        {/* <Counter /> */}
         <form
           onSubmit={e => {
             e.preventDefault();
