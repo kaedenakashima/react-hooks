@@ -1,59 +1,41 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  createContext
-} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Toggle from './Toggle';
 import { useTitleInput } from './hooks/useTitleInput';
-
-export const UserContext = createContext();
+import useAbortableFetch from 'use-abortable-fetch';
+import { useSpring, animated } from 'react-spring';
 
 const App = () => {
   const [name, setName] = useTitleInput('');
   const ref = useRef();
 
-  const [dishes, setDishes] = useState([]);
+  const { data, loading } = useAbortableFetch(
+    'https://my-json-server.typicode.com/leveluptuts/fakeapi/dishes'
+  );
 
-  const fetchDishes = async () => {
-    console.log('ran');
-    const res = await fetch(
-      'https://my-json-server.typicode.com/leveluptuts/fakeapi/dishes'
-    );
-    const data = await res.json();
-    setDishes(data);
-  };
-
-  useEffect(() => {
-    fetchDishes();
-  }, []);
-
+  const props = useSpring({ opacity: 1, from: { opacity: 0 } });
   return (
-    <UserContext.Provider
-      value={{
-        user: true
-      }}
-    >
-      <div className='main-wrapper' ref={ref}>
-        <h1 onClick={() => ref.current.classList.add('new-fake-class')}>
-          Level Up Dishes
-        </h1>
-        <Toggle />
-        {/* <Counter /> */}
-        <form
-          onSubmit={e => {
-            e.preventDefault();
-          }}
-        >
-          <input
-            type='text'
-            onChange={e => setName(e.target.value)}
-            value={name}
-          />
-          <button>Submit</button>
-        </form>
-        {dishes.map(dish => (
+    <div className='main-wrapper' ref={ref}>
+      <animated.h1
+        style={props}
+        onClick={() => ref.current.classList.add('new-fake-class')}
+      >
+        Level Up Dishes
+      </animated.h1>
+      <Toggle />
+      <form
+        onSubmit={e => {
+          e.preventDefault();
+        }}
+      >
+        <input
+          type='text'
+          onChange={e => setName(e.target.value)}
+          value={name}
+        />
+        <button>Submit</button>
+      </form>
+      {data &&
+        data.map(dish => (
           <article className='dish-card dish-card--withImage'>
             <h3>{dish.name}</h3>
             <p>{dish.desc}</p>
@@ -64,8 +46,7 @@ const App = () => {
             </div>
           </article>
         ))}
-      </div>
-    </UserContext.Provider>
+    </div>
   );
 };
 
