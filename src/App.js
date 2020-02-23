@@ -8,6 +8,7 @@ const App = () => {
 
   return (
     <div className='main-wrapper' ref={ref}>
+      // change css by clicking 'Dishes'
       <h1 onClick={() => ref.current.classList.add('new-fake-class')}>
         Level Up Dishes
       </h1>
